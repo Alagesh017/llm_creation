@@ -6,7 +6,7 @@ from tokenizers import ByteLevelBPETokenizer
 os.makedirs("my_tokenizer", exist_ok=True)
 
 # Load CSV
-df = pd.read_csv("wikipedia_10000_articles.csv")
+df = pd.read_csv("wikipedia_3000_articles.csv")
 
 # Save text column
 with open("training_text.txt", "w", encoding="utf-8") as f:

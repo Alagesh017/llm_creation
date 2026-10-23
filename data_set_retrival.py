@@ -1,33 +1,33 @@
-from datasets import load_dataset
+from itertools import islice
+
 import pandas as pd
+from datasets import load_dataset
+
+NUM_ARTICLES = 3000
+OUTPUT_FILE = f"wikipedia_{NUM_ARTICLES}_articles.csv"
 
 # Stream Wikipedia instead of downloading everything
 dataset = load_dataset(
     "wikimedia/wikipedia",
     "20231101.en",
     split="train",
-    streaming=True
+    streaming=True,
 )
 
 rows = []
 
-# Collect first 10,000 articles
-for i, article in enumerate(dataset):
+# Collect only the first NUM_ARTICLES articles
+for i, article in enumerate(islice(dataset, NUM_ARTICLES), start=1):
     rows.append({
         "title": article["title"],
-        "text": article["text"]
+        "text": article["text"],
     })
 
-    if i >= 9999:
-        break
-
-    if i % 1000 == 0:
+    if i % 500 == 0:
         print(f"Processed {i} articles...")
 
-# Convert to DataFrame
+# Convert to DataFrame and save to CSV
 df = pd.DataFrame(rows)
+df.to_csv(OUTPUT_FILE, index=False)
 
-# Save to CSV
-df.to_csv("wikipedia_10000_articles.csv", index=False)
-
-print(f"Saved {len(df)} articles to wikipedia_10000_articles.csv")
+print(f"Saved {len(df)} articles to {OUTPUT_FILE}")

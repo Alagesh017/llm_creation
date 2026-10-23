@@ -15,6 +15,17 @@ class MyTokenizer:
             merges_path
         )
 
+        # Re-register special tokens. They are not restored automatically
+        # when loading from vocab.json / merges.txt, so "[MASK]" etc. would
+        # otherwise be split into raw bytes instead of their single id.
+        self.tokenizer.add_special_tokens([
+            "[PAD]",
+            "[UNK]",
+            "[CLS]",
+            "[SEP]",
+            "[MASK]"
+        ])
+
     def encode(self, text):
 
         return self.tokenizer.encode(text).ids

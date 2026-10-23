@@ -30,8 +30,9 @@ from model.mlm_dataset import MLMDataset
 # Configuration
 # ==========================================
 
-BATCH_SIZE = 8
-EPOCHS = 5
+BATCH_SIZE = 24
+EPOCHS = 1
+MAX_STEPS_PER_EPOCH = 200
 LEARNING_RATE = 1e-4
 VOCAB_SIZE = 10000
 
@@ -152,9 +153,13 @@ for epoch in range(EPOCHS):
                 f"{loss.item():.4f}"
             )
 
+        # Limit steps per epoch
+        if step + 1 >= MAX_STEPS_PER_EPOCH:
+            break
+
     avg_loss = (
         total_loss /
-        len(dataloader)
+        min(len(dataloader), MAX_STEPS_PER_EPOCH)
     )
 
     print(
